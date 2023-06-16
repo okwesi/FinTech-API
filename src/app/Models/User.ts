@@ -1,19 +1,6 @@
 import mongoose, { Schema, Document } from 'mongoose';
+import IUser from '../../interfaces/UserInferface';
 
-interface IUser extends Document {
-    username: string;
-    email: string;
-    password: string;
-    dateJoined?: Date;
-    lastLogin?: Date;
-    roleId: number;
-    resetToken?: string;
-    createdAt?: Date;
-    updatedAt?: Date;
-    expiresAt?: Date;
-    isDeleted?: boolean;
-    deletedAt?: Date;
-}
 
 const userSchema: Schema = new Schema<IUser>({
     username: {

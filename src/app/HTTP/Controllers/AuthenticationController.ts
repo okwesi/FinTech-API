@@ -7,7 +7,6 @@ import jwt from 'jsonwebtoken';
 import SignInPayload from '../Payloads/SignInPayload';
 require('dotenv').config();
 
-// Validation
 
 
 
@@ -39,7 +38,8 @@ const signup = async (request: Request<{}, {}, SignUpPayload.shape>, response: R
 };
 
 
- const signin = async (req: Request<{}, {}, SignInPayload.shape>, res: Response): Promise<any> => {
+const signin = async (req: Request<{}, {}, SignInPayload.shape>, res: Response): Promise<any> => {
+
     try {
         const { email, password } = req.body;
 
@@ -67,7 +67,7 @@ const signup = async (request: Request<{}, {}, SignUpPayload.shape>, response: R
 
 
         const token = jwt.sign({ _id: user._id }, process.env.JWT_SECRET || "");
-        res.header("Authorization", token).json(token);
+        res.header("BEARER", token).json(token);
 
     } catch (error) {
         console.error('Error signing in:', error);
