@@ -59,6 +59,7 @@ const store = async (req: IAuthenticatedRequest<AddUserStocksPayload.Shape>, res
         stockSymbol,
         purchaseDate,
         brokerage } = req.body;
+        
     const userStock = new UserStocks({
         userId: user._id,
         stockName,
@@ -98,7 +99,7 @@ const destroy = async (req: IAuthenticatedRequest, res: Response) => {
         );
         if (!deletedUserStock) {
             return res.status(404).json({
-                message: 'User stock not found or unauthorized to delete'
+                message: 'Unauthorized to delete'
             });
         }
         res.status(200).json({
@@ -125,7 +126,7 @@ const update = async (req: IAuthenticatedRequest<AddUserStocksPayload.Shape>, re
 
     try {
         const updatedUserStock = await UserStocks.findOneAndUpdate(
-            { _id: id, userId: req.user?._id },
+            { _id: id, userId: req.user?._id, isDeleted: { $ne: true } },
             {
                 stockName,
                 purchaseQuantity,
@@ -135,7 +136,7 @@ const update = async (req: IAuthenticatedRequest<AddUserStocksPayload.Shape>, re
         );
         if (!updatedUserStock) {
             return res.status(404).json({
-                message: 'User stock not found or unauthorized to update'
+                message: 'Unauthorized to update'
             });
         }
         res.status(200).json(updatedUserStock);

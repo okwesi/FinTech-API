@@ -1,6 +1,6 @@
 import { Joi } from 'celebrate';
 
-namespace UpdateUserStockPayload.ts {
+namespace UpdateUserStockPayload {
     export interface Shape {
         stockName: string;
         purchaseQuantity: number;
@@ -12,4 +12,4 @@ namespace UpdateUserStockPayload.ts {
     });
 }
 
-export default UpdateUserStockPayload.ts;
+export default UpdateUserStockPayload;
