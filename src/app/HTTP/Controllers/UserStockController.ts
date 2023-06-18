@@ -2,6 +2,8 @@ import { Response } from "express";
 import IAuthenticatedRequest from "../../../interfaces/MiddlewareRequestInterface";
 import UserStocks from "../../Models/UserStocks";
 import AddUserStocksPayload from "../Payloads/AddUserStocksPayload";
+import ErrorResource from "../Resources/ErrorResource";
+import StockResource from "../Resources/StocksResource";
 
 
 
@@ -16,7 +18,7 @@ const adminIndex = async (req: IAuthenticatedRequest, res: Response) => {
     const userStocks = await UserStocks.find({}).populate({
         path: 'userId',
         select: '-password'
-    });    
+    });
     res.status(200).json(userStocks);
 }
 
@@ -25,12 +27,51 @@ const index = async (req: IAuthenticatedRequest, res: Response) => {
     const user = req.user;
     if (!user) {
         return res.status(401).json({
-            message: 'Unauthorized'
+            message: 'Unauthorized',
         });
     }
-    const userStocks = await UserStocks.find({ userId: user?._id, isDeleted: { $ne: true } }).populate('_id');
-    res.status(200).json(userStocks);
-}
+
+    const page = parseInt(req.query.page as string) || 1;
+    const limit = parseInt(req.query.limit as string) || 10;
+    const startIndex = (page - 1) * limit;
+    const endIndex = page * limit;
+
+    try {
+        const totalStocks = await UserStocks.countDocuments({
+            userId: user?._id,
+            isDeleted: { $ne: true },
+        });
+
+        const userStocks = await UserStocks.find({ userId: user?._id, isDeleted: { $ne: true } })
+            .sort({ dateCreated: 'asc' })
+            .skip(startIndex)
+            .limit(limit)
+            .populate('_id');
+
+        const pagination = {
+            currentPage: page,
+            totalPages: Math.ceil(totalStocks / limit),
+            totalItems: totalStocks,
+        };
+
+        const stockResource: StockResource = {
+            pagination: pagination,
+            stocks: userStocks
+        };
+
+        res.status(200).json(stockResource);
+    } catch (err: any) {
+        const errorResponse: ErrorResource = {
+            data: null,
+            error: {
+                status: 400,
+                message: err.message
+            }
+        };
+
+        res.status(400).json(errorResponse);
+    };
+};
 
 const show = async (req: IAuthenticatedRequest, res: Response) => {
     const user = req.user;
@@ -59,7 +100,7 @@ const store = async (req: IAuthenticatedRequest<AddUserStocksPayload.Shape>, res
         stockSymbol,
         purchaseDate,
         brokerage } = req.body;
-        
+
     const userStock = new UserStocks({
         userId: user._id,
         stockName,
@@ -90,9 +131,9 @@ const destroy = async (req: IAuthenticatedRequest, res: Response) => {
     try {
         const deletedUserStock = await UserStocks.findOneAndUpdate(
             { _id: id, userId: req.user?._id },
-            { 
-                isDeleted: true, 
-                dateDeleted: new Date() 
+            {
+                isDeleted: true,
+                dateDeleted: new Date()
             },
             { new: true }
 
@@ -119,7 +160,7 @@ const update = async (req: IAuthenticatedRequest<AddUserStocksPayload.Shape>, re
         });
     }
     const { id } = req.params;
-    const { 
+    const {
         stockName,
         purchaseQuantity
     } = req.body;
@@ -154,7 +195,7 @@ const UserStockController = {
     index,
     store,
     destroy,
-    show, 
+    show,
     update
 }
 

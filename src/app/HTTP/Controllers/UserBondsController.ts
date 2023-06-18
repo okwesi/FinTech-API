@@ -4,6 +4,7 @@ import IAuthenticatedRequest from '../../../interfaces/MiddlewareRequestInterfac
 import AddUserBondsPayload from '../Payloads/AddUserBondsPayload';
 import UpdateUserBondsPayload from '../Payloads/UpdateUserBondsPayload';
 import PaymentFrequency from '../../../enums/PayementFrequency';
+import Pagination from '../../../interfaces/PaginationInterface';
 
 const adminIndex = async (req: IAuthenticatedRequest, res: Response): Promise<void> => {
     try {
@@ -17,13 +18,32 @@ const adminIndex = async (req: IAuthenticatedRequest, res: Response): Promise<vo
 
 const index = async (req: IAuthenticatedRequest, res: Response): Promise<void> => {
     try {
-        const userBonds = await UserBonds.find({ userId: req.user?._id, isDeleted: { $ne: true } });
-        res.status(200).json(userBonds);
+        const page = parseInt(req.query.page as string) || 1;
+        const limit = parseInt(req.query.limit as string) || 10;
+
+        const startIndex = (page - 1) * limit;
+        const endIndex = page * limit;
+
+        const totalBonds = await UserBonds.countDocuments({ userId: req.user?._id, isDeleted: { $ne: true } });
+
+        const userBonds = await UserBonds.find({ userId: req.user?._id, isDeleted: { $ne: true } })
+            .sort({ dateCreated: 'asc' })
+            .skip(startIndex)
+            .limit(limit);
+
+        const pagination: Pagination = {
+            currentPage: page,
+            totalPages: Math.ceil(totalBonds / limit),
+            totalItems: totalBonds
+        };
+
+        res.status(200).json({ pagination,  userBonds,});
     } catch (error) {
         console.error('Error retrieving user bonds:', error);
         res.status(500).json({ error: 'Server error' });
     }
 };
+
 
 const show = async (req: IAuthenticatedRequest, res: Response): Promise<void> => {
     try {
