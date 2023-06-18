@@ -20,7 +20,15 @@ const signup = async (request: Request<{}, {}, SignUpPayload.shape>, response: R
     try {
         const userExist = await User.findOne({ email: email });
         if (userExist) {
-            return response.status(400).json('User with email already exists');
+            const errorResponse: ErrorResource = {
+                data: null,
+                error: {
+                    status: 400,
+                    message: 'User with email already exists'
+                }
+            };
+            response.status(400).json(errorResponse);
+            return;
         }
 
         const salt = await bcrypt.genSalt(10);
@@ -70,18 +78,43 @@ const signin = async (req: Request<{}, {}, SignInPayload.shape>, res: Response):
         const { email, password } = req.body;
 
         if (!email || !password) {
-            res.status(400).json('Invalid credentials.');
+
+            const errorResponse: ErrorResource = {
+                data: null,
+                error: {
+                    status: 400,
+                    message: 'Invalid credentials.'
+                }
+            };
+            res.status(400).json(errorResponse);
+            return;
         }
 
         const user = await User.findOne({ email });
         if (!user) {
-            res.status(400).json("User with this email does not exist");
+
+            const errorResponse: ErrorResource = {
+                data: null,
+                error: {
+                    status: 400,
+                    message: "Invalid Credentials"
+                }
+            };
+            res.status(400).json(errorResponse);
             return;
         }
 
         const validPassword = await bcrypt.compare(password, user.password);
         if (!validPassword) {
-            res.status(400).json("Password is not correct");
+
+            const errorResponse: ErrorResource = {
+                data: null,
+                error: {
+                    status: 400,
+                    message: "Invalid Credentials"
+                }
+            };
+            res.status(400).json(errorResponse);
             return;
         }
         const expirationDate = new Date();
@@ -102,7 +135,6 @@ const signin = async (req: Request<{}, {}, SignInPayload.shape>, res: Response):
         res.json(response);
 
     } catch (err: any) {
-        //TODO: Do it correctly
         const errorResponse: ErrorResource = {
             data: null,
             error: {
