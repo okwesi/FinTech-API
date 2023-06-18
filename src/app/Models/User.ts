@@ -21,10 +21,6 @@ const userSchema: Schema = new Schema<IUser>({
         min: 6,
         max: 1024,
     },
-    dateJoined: {
-        type: Date,
-        default: Date.now,
-    },
     lastLogin: {
         type: Date,
         default: Date.now,
@@ -32,9 +28,6 @@ const userSchema: Schema = new Schema<IUser>({
     roleId: {
         type: Number,
         required: true,
-    },
-    resetToken: {
-        type: String,
     },
     createdAt: {
         type: Date,
