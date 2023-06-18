@@ -164,7 +164,6 @@ const store = async (req: IAuthenticatedRequest<AddUserBondsPayload.Shape>, res:
 };
 
 const destroy = async (req: IAuthenticatedRequest, res: Response): Promise<void> => {
-    console.log('destroy');
     try {
         const { id } = req.params;
         const deletedUserBond = await UserBonds.findOneAndUpdate(
@@ -202,17 +201,30 @@ const destroy = async (req: IAuthenticatedRequest, res: Response): Promise<void>
 const update = async (req: IAuthenticatedRequest<UpdateUserBondsPayload.Shape>, res: Response): Promise<void> => {
     try {
         const { id } = req.params;
-        const { purchaseValue, purchaseDate } = req.body;
+        const { purchaseValue, purchaseDate, bondName } = req.body;
+
+        const updateFields: any = {
+            dateUpdated: new Date(),
+        };
+
+        if (bondName !== null) {
+            updateFields.bondName = bondName;
+        }
+
+        if (purchaseValue !== null) {
+            updateFields.purchaseValue = purchaseValue;
+        }
+
+        if (purchaseDate !== null) {
+            updateFields.purchaseDate = purchaseDate;
+        }
 
         const updatedUserBond = await UserBonds.findOneAndUpdate(
             { _id: id, userId: req.user?._id, isDeleted: { $ne: true } },
-            {
-                purchaseValue,
-                purchaseDate,
-                dateUpdated: new Date(),
-            },
+            updateFields,
             { new: true }
         );
+
         if (!updatedUserBond) {
             const errorPayload: ErrorPayload = {
                 status: 404,
@@ -225,6 +237,7 @@ const update = async (req: IAuthenticatedRequest<UpdateUserBondsPayload.Shape>, 
             res.status(404).json(errorResource);
             return;
         }
+
         res.status(200).json(updatedUserBond);
     } catch (error) {
         console.error('Error updating user bond:', error);
@@ -239,6 +252,7 @@ const update = async (req: IAuthenticatedRequest<UpdateUserBondsPayload.Shape>, 
         res.status(500).json(errorResource);
     }
 };
+
 
 const UserBondsController = {
     adminIndex,

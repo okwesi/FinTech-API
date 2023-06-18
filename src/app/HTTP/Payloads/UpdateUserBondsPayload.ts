@@ -2,13 +2,16 @@ import { Joi } from 'celebrate';
 
 namespace UpdateUserBondsPayload {
     export interface Shape {
-        purchaseValue: number;
-        purchaseDate: Date;
+        id: string;
+        bondName: string | null;
+        purchaseValue: number | null;
+        purchaseDate: string | null;
     }
-
     export const schema = Joi.object<Shape>().keys({
-        purchaseValue: Joi.number(),
-        purchaseDate: Joi.date(),
+        id: Joi.string(),
+        bondName: Joi.string().allow(null),
+        purchaseValue: Joi.number().allow(null),
+        purchaseDate: Joi.string().allow(null),
     });
 }
 

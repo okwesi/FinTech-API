@@ -10,6 +10,7 @@ import UpdateUserBondsPayload from "../Payloads/UpdateUserBondsPayload";
 
 const UserBondsRouter = Router();
 
+
 UserBondsRouter.get('/admin', [AuthenticationMiddleware, AdminMiddleware], UserBondsController.adminIndex);
 UserBondsRouter.get('/', [AuthenticationMiddleware], UserBondsController.index);
 UserBondsRouter.get('/:id', [AuthenticationMiddleware], UserBondsController.show);
