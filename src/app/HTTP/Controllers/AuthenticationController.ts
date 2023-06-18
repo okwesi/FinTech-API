@@ -12,34 +12,6 @@ import ErrorResource from '../Resources/ErrorResource';
 require('dotenv').config();
 
 
-
-/**
- * @swagger
- * /signup:
- *   post:
- *     summary: User signup
- *     description: Register a new user
- *     tags: [Authentication]
- *     requestBody:
- *       required: true
- *       content:
- *         application/json:
- *           schema:
- *             $ref: '#/components/schemas/SignUpPayload'
- *     responses:
- *       200:
- *         description: Signup successful
- *         content:
- *           application/json:
- *             schema:
- *               $ref: '#/components/schemas/AuthenticationResponse'
- *       400:
- *         description: Bad request or user already exists
- *         content:
- *           application/json:
- *             schema:
- *               $ref: '#/components/schemas/ErrorResource'
- */
 const signup = async (request: Request<{}, {}, SignUpPayload.shape>, response: Response) => {
 
     const { username, email, password } = request.body;

@@ -6,24 +6,6 @@ import SignInPayload from '../Payloads/SignInPayload';
 
 const AuthenticationRouter = Router();
 
-/**
- * @swagger
- * /signup:
- *   post:
- *     summary: User signup
- *     description: Register a new user
- *     tags: [Authentication]
- *     requestBody:
- *       required: true
- *      
- *     responses:
- *       200:
- *         description: Signup successful
- *                   
- *       400:
- *         description: Bad request or user already exists
- *        
- */
 AuthenticationRouter.post('/signup', celebrate({ [Segments.BODY]: SignUpPayload.schema }), AuthenticationController.signup);
 
 
