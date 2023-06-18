@@ -5,6 +5,8 @@ import AddUserBondsPayload from '../Payloads/AddUserBondsPayload';
 import UpdateUserBondsPayload from '../Payloads/UpdateUserBondsPayload';
 import PaymentFrequency from '../../../enums/PayementFrequency';
 import Pagination from '../../../interfaces/PaginationInterface';
+import ErrorResource, { ErrorPayload } from '../Resources/ErrorResource';
+import BondsResource from '../Resources/BondsResources';
 
 const adminIndex = async (req: IAuthenticatedRequest, res: Response): Promise<void> => {
     try {
@@ -37,10 +39,22 @@ const index = async (req: IAuthenticatedRequest, res: Response): Promise<void> =
             totalItems: totalBonds
         };
 
-        res.status(200).json({ pagination,  userBonds,});
+        const bondsResource: BondsResource = {
+            bonds: userBonds,
+            pagination: pagination,
+        };
+
+        res.status(200).json(bondsResource);
     } catch (error) {
-        console.error('Error retrieving user bonds:', error);
-        res.status(500).json({ error: 'Server error' });
+        const errorPayload: ErrorPayload = {
+            status: 500,
+            message: 'Server error',
+        };
+        const errorResource: ErrorResource = {
+            data: null,
+            error: errorPayload,
+        };
+        res.status(500).json(errorResource);
     }
 };
 
@@ -63,12 +77,12 @@ const show = async (req: IAuthenticatedRequest, res: Response): Promise<void> =>
 const store = async (req: IAuthenticatedRequest<AddUserBondsPayload.Shape>, res: Response): Promise<void> => {
     try {
         const { bondName, faceValue, couponRate, maturityDate, purchaseValue, paymentFrequency, purchaseDate, organization } = req.body;
-         
+
         if (!Object.values(PaymentFrequency).includes(paymentFrequency)) {
             res.status(400).json({ message: 'Invalid payment frequency' });
             return;
         }
-        
+
         const userBond = new UserBonds({
             userId: req.user?._id,
             bondName,

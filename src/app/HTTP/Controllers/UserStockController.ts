@@ -3,7 +3,7 @@ import IAuthenticatedRequest from "../../../interfaces/MiddlewareRequestInterfac
 import UserStocks from "../../Models/UserStocks";
 import AddUserStocksPayload from "../Payloads/AddUserStocksPayload";
 import ErrorResource from "../Resources/ErrorResource";
-import StockResource from "../Resources/StocksResource";
+import StocksResource from "../Resources/StocksResource";
 
 
 
@@ -54,7 +54,7 @@ const index = async (req: IAuthenticatedRequest, res: Response) => {
             totalItems: totalStocks,
         };
 
-        const stockResource: StockResource = {
+        const stockResource: StocksResource = {
             pagination: pagination,
             stocks: userStocks
         };

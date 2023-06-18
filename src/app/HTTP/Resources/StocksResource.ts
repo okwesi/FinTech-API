@@ -1,23 +1,7 @@
-export interface Stock {
-    stockName: string;
-    dateCreated: Date;
-    dateUpdated: Date;
-    dateDeleted: Date;
-    isDeleted: boolean;
-    purchasePrice: number;
-    purchaseQuantity: number;
-    stockSymbol: string;
-    purchaseDate: Date;
-    brokerage: string;
-}
+import Pagination from "../../../interfaces/PaginationInterface";
+import { StockResource } from "./StockResource";
 
-export interface Pagination {
-    currentPage: number;
-    totalPages: number;
-    totalItems: number;
-}
-
-export default interface StockResource {
+export default interface StocksResource {
     pagination: Pagination;
-    stocks: Array<Stock>;
+    stocks: Array<StockResource>;
 }
