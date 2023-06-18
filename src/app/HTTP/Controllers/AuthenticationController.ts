@@ -95,13 +95,14 @@ const signin = async (req: Request<{}, {}, SignInPayload.shape>, res: Response):
 
         const response: AuthenticationResponse = {
             accessToken: token,
-            expiryAt: expirationDate.getTime(),
+            expiryAt: Number(expirationDate.getTime()),
             user: user
         };
 
         res.json(response);
 
     } catch (err: any) {
+        //TODO: Do it correctly
         const errorResponse: ErrorResource = {
             data: null,
             error: {
