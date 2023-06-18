@@ -29,7 +29,7 @@ const index = async (req: IAuthenticatedRequest, res: Response): Promise<void> =
         const totalBonds = await UserBonds.countDocuments({ userId: req.user?._id, isDeleted: { $ne: true } });
 
         const userBonds = await UserBonds.find({ userId: req.user?._id, isDeleted: { $ne: true } })
-            .sort({ dateCreated: 'asc' })
+            .sort({ maturityDate: 'asc' })
             .skip(startIndex)
             .limit(limit);
 
