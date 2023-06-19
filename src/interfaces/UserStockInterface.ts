@@ -9,6 +9,7 @@ export default interface IUserStock extends Document {
     isDeleted: boolean;
     purchasePrice: number;
     purchaseQuantity: number;
+    currentQuantity: number;
     stockSymbol: string;
     purchaseDate: Date;
     brokerage: string;

@@ -37,6 +37,10 @@ const UserStockSchema: Schema = new Schema({
         type: Number,
         required: true
     },
+    currentQuantity: {
+        type: Number,
+        required: true
+    },
     stockSymbol: {
         type: String,
         required: true

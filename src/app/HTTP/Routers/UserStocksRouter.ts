@@ -6,6 +6,7 @@ import User from '../../Models/User';
 import AddUserStocksPayload from '../Payloads/AddUserStocksPayload';
 import AdminMiddleware from '../Middlewares/AdminMiddleWare';
 import UpdateUserStockPayload from '../Payloads/UpdateUserStockPayload';
+import AddUserStockLogPayload from '../Payloads/AddUserStockLogPayload';
 
 const UserStocksRouter = Router();
 
@@ -15,6 +16,7 @@ UserStocksRouter.get('/:id', [AuthenticationMiddleware], UserStockController.sho
 UserStocksRouter.post('/', celebrate({ [Segments.BODY]: AddUserStocksPayload.schema }) , [AuthenticationMiddleware], UserStockController.store);
 UserStocksRouter.delete('/:id', [AuthenticationMiddleware], UserStockController.destroy);
 UserStocksRouter.put('/:id', celebrate({ [Segments.BODY]: UpdateUserStockPayload.schema }), [AuthenticationMiddleware], UserStockController.update);
+UserStocksRouter.post('/:id/transaction', celebrate({ [Segments.BODY]: AddUserStockLogPayload.schema }), [AuthenticationMiddleware], UserStockController.transaction);
 
 
 
