@@ -34,8 +34,9 @@ const swaggerOptions = {
             },
         ],
     },
-    apis: [],
+    apis: ['./src/app/HTTP/Routers/AuthenticationRouter.ts'],
 };
+
 const swaggerDocs = swaggerJsdoc(swaggerOptions);
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocs));
 
